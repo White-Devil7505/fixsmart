@@ -4,7 +4,7 @@ from . serializers import *
 from django.contrib.auth import logout
 
 def home(request):
-    return render(request,'home.html')
+    return render(request,'index.html')
 
 def register(request):
     if request.method=='POST':
