@@ -10,4 +10,8 @@ services:
       - key: SECRET_KEY
         generateValue: true
       - key: ALLOWED_HOSTS
-        value: your-render-url.onrender.com
+        value: fixsmart.onrender.com  # replace with your actual Render URL
+      - fromDatabase:
+          name: fixsmart-db           # use the name you gave the database in Render
+          property: connectionString
+          key: postgresql://fixsmart_user:1XedA29OoYeeYOZbGwOHg7hDA2TyQH2E@dpg-d22ff1be5dus739jogmg-a/fixsmart
