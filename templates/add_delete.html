@@ -1,0 +1,90 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Manage Departments</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-6">
+
+  <div class="max-w-4xl mx-auto bg-white shadow-md rounded-lg p-6">
+    <h2 class="text-2xl font-semibold mb-6 text-center text-blue-600">Department Management</h2>
+
+    <!-- Search Bar -->
+    <div class="mb-4 flex justify-center">
+      <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="Search department..."
+             class="w-2/3 px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-300">
+    </div>
+
+    <table class="min-w-full bg-white border border-gray-300 rounded">
+      <thead class="bg-blue-100">
+        <tr>
+          <th class="py-2 px-4 border-b text-left">ID</th>
+          <th class="py-2 px-4 border-b text-left">Department Name</th>
+          <th class="py-2 px-4 border-b text-center">Action</th>
+        </tr>
+      </thead>
+      <tbody id="department-table">
+        {% for dept in depts %}
+        <tr class="hover:bg-gray-50">
+          <td class="py-2 px-4 border-b">{{ dept.id }}</td>
+          <td class="py-2 px-4 border-b">{{ dept.name }}</td>
+          <td class="py-2 px-4 border-b text-center">
+            <form method="POST" action="{% url 'delete_department' dept.id %}">
+              {% csrf_token %}
+              <button type="submit" class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">Delete</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <!-- Add Row Button -->
+    <div class="mt-6 text-center">
+      <button onclick="addRow()" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
+        + Add Department
+      </button>
+    </div>
+
+    <!-- Add New Department Form -->
+    <form method="POST" action="{% url 'add_department' %}" class="mt-4" id="add-form" style="display: none;">
+      {% csrf_token %}
+      <div class="flex items-center gap-4 justify-center">
+        <input type="text" name="name" required
+               class="border border-gray-300 px-3 py-2 rounded w-1/2"
+               placeholder="Enter department name">
+        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+          Save
+        </button>
+      </div>
+    </form>
+
+  </div>
+
+  <script>
+    function addRow() {
+      document.getElementById("add-form").style.display = "block";
+    }
+
+    function filterTable() {
+      const input = document.getElementById("searchInput");
+      const filter = input.value.toLowerCase();
+      const table = document.getElementById("department-table");
+      const rows = table.getElementsByTagName("tr");
+
+      for (let i = 0; i < rows.length; i++) {
+        const cells = rows[i].getElementsByTagName("td");
+        const name = cells[1]?.textContent || '';
+        if (name.toLowerCase().includes(filter)) {
+          rows[i].style.display = "";
+        } else {
+          rows[i].style.display = "none";
+        }
+      }
+    }
+  </script>
+
+</body>
+</html>

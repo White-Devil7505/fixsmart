@@ -1,0 +1,92 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fix Smart</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="./styles/styles.css"/>
+</head>
+<body class="bg-gray-100 flex flex-col min-h-screen">
+
+  <!-- Navbar -->
+<header class="dj-navbar bg-red-800 text-white shadow-md fixed top-0 w-full z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16">
+      <div class="flex items-center space-x-2">
+        <img src="{%  static './images/logo.png' %}" alt="Fix Smart" class="w-10 h-10" />
+        <span class="text-xl font-bold tracking-wide text-red-900">Fix Smart</span>
+      </div>
+
+      <nav class="flex gap-6 text-base font-semibold text-black">
+        <a href="/" class="hover:text-yellow-300">Home</a>
+        <a href="/about" class="hover:text-yellow-300">About</a>
+        <a href="{% url 'register' %}" class="hover:text-yellow-300">Register</a>
+        <a href="/contact" class="hover:text-yellow-300">Contact</a>
+        <a href="{% url 'login' %}" class="hover:text-yellow-300">Login</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="flex-grow pt-20 px-4 bg-black text-white">
+
+    <!-- Hero Section -->
+    <section class="py-24 px-4 text-center">
+      <h1 class="text-5xl font-extrabold mb-4">📣 Report Public Issues Instantly</h1>
+      <p class="text-xl mb-6 text-gray-300 max-w-2xl mx-auto">
+        Raise complaints related to Streets, Pipes, and Roads to help authorities respond faster!
+      </p>
+      <a href="/complaint" class="bg-white text-black px-6 py-3 rounded-full font-semibold hover:bg-gray-300 transition">
+        Register a Complaint
+      </a>
+    </section>
+
+    <!-- Categories -->
+    <section class="py-20 px-6 max-w-7xl mx-auto">
+      <h2 class="text-4xl font-bold text-center mb-12">🚧 What Can You Report?</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
+
+        <!-- Card 1 -->
+        <div class="bg-gray-900 border border-gray-800 p-8 rounded-2xl shadow-lg hover:scale-105 hover:border-blue-500 transition-transform text-center">
+          <div class="text-5xl text-blue-500 mb-4 mx-auto">🏙️</div>
+          <h3 class="text-2xl font-bold text-white mb-2">Street Issues</h3>
+          <p class="text-gray-400">Broken lights, footpath problems, or encroachments in your area.</p>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="bg-gray-900 border border-gray-800 p-8 rounded-2xl shadow-lg hover:scale-105 hover:border-blue-500 transition-transform text-center">
+          <div class="text-5xl text-blue-500 mb-4 mx-auto">💧</div>
+          <h3 class="text-2xl font-bold text-white mb-2">Pipe Issues</h3>
+          <p class="text-gray-400">Leakages, sewer overflows, or waterlogging issues.</p>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="bg-gray-900 border border-gray-800 p-8 rounded-2xl shadow-lg hover:scale-105 hover:border-blue-500 transition-transform text-center">
+          <div class="text-5xl text-blue-500 mb-4 mx-auto">🛣️</div>
+          <h3 class="text-2xl font-bold text-white mb-2">Road Issues</h3>
+          <p class="text-gray-400">Potholes, open manholes, and road hazards.</p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Call To Action -->
+    <section class="bg-gray-950 py-16 text-center border-t border-gray-800">
+      <img src="{% static 'images/logo.png' %}" alt="Fix Smart" class="w-20 h-20 mx-auto mb-4" />
+      <h3 class="text-3xl font-semibold mb-4">Let’s build a better city together!</h3>
+      <a href="/complaint" class="mt-4 bg-blue-600 text-white px-10 py-3 rounded-full font-bold shadow-md hover:bg-blue-700 transition">
+        File a Complaint Now
+      </a>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-gray-900 text-white text-center py-4 shadow-inner">
+    &copy; 2025 Fix Smart. All rights reserved.
+  </footer>
+
+</body>
+</html>

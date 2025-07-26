@@ -1,0 +1,108 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Users List</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    function searchTable() {
+      const input = document.getElementById('searchInput').value.toLowerCase();
+      const rows = document.querySelectorAll('tbody tr[data-row]');
+      let visibleCount = 0;
+
+      rows.forEach(row => {
+        const rowText = row.innerText.toLowerCase();
+        if (rowText.includes(input)) {
+          row.style.display = '';
+          visibleCount++;
+        } else {
+          row.style.display = 'none';
+        }
+      });
+
+      const noResultRow = document.getElementById('noResultRow');
+      if (visibleCount === 0) {
+        noResultRow.classList.remove('hidden');
+      } else {
+        noResultRow.classList.add('hidden');
+      }
+    }
+  </script>
+</head>
+<body class="bg-gray-100 min-h-screen p-6 font-sans">
+  <div class="container mx-auto max-w-7xl">
+    <h1 class="text-4xl font-bold mb-8 text-center text-blue-700">Users List</h1>
+
+    <!-- Search Input -->
+    <div class="mb-6 flex justify-end">
+      <input
+        type="text"
+        id="searchInput"
+        onkeyup="searchTable()"
+        placeholder="Search by any field..."
+        class="w-1/3 p-3 border border-gray-300 rounded shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+      />
+    </div>
+
+    <div class="overflow-x-auto bg-white rounded-lg shadow-md">
+      <table class="min-w-full divide-y divide-gray-200 text-sm">
+        <thead class="bg-blue-600 text-white">
+          <tr>
+            <th class="px-6 py-3 text-left font-semibold">Image</th>
+            <th class="px-6 py-3 text-left font-semibold">First Name</th>
+            <th class="px-6 py-3 text-left font-semibold">Middle Name</th>
+            <th class="px-6 py-3 text-left font-semibold">Last Name</th>
+            <th class="px-6 py-3 text-left font-semibold">Mobile</th>
+            <th class="px-6 py-3 text-left font-semibold">Email</th>
+            <th class="px-6 py-3 text-left font-semibold">Landmark</th>
+            <th class="px-6 py-3 text-left font-semibold">Village</th>
+            <th class="px-6 py-3 text-left font-semibold">Mandal</th>
+            <th class="px-6 py-3 text-left font-semibold">Pincode</th>
+            <th class="px-6 py-3 text-left font-semibold">District</th>
+            <th class="px-6 py-3 text-left font-semibold">State</th>
+            <th class="px-6 py-3 text-left font-semibold">Department</th>
+            <th class="px-6 py-3 text-left font-semibold">Designated At</th>
+            <th class="px-6 py-3 text-left font-semibold">Position</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-200">
+          {% for u in user %}
+          <tr data-row class="hover:bg-gray-50 cursor-pointer">
+            <td class="px-6 py-4">
+              {% if u.image %}
+              <img src="{{ u.image.url }}" alt="Profile" class="w-12 h-12 rounded-full object-cover" />
+              {% else %}
+              <span class="text-gray-400 italic">No Image</span>
+              {% endif %}
+            </td>
+            <td class="px-6 py-4">{{ u.fname }}</td>
+            <td class="px-6 py-4">{{ u.mname }}</td>
+            <td class="px-6 py-4">{{ u.lname }}</td>
+            <td class="px-6 py-4">{{ u.mobile }}</td>
+            <td class="px-6 py-4">{{ u.email }}</td>
+            <td class="px-6 py-4">{{ u.landmark }}</td>
+            <td class="px-6 py-4">{{ u.village }}</td>
+            <td class="px-6 py-4">{{ u.mandal }}</td>
+            <td class="px-6 py-4">{{ u.pincode }}</td>
+            <td class="px-6 py-4">{{ u.district }}</td>
+            <td class="px-6 py-4">{{ u.state }}</td>
+            <td class="px-6 py-4">{{ u.department }}</td>
+            <td class="px-6 py-4">{{ u.designated_at }}</td>
+            <td class="px-6 py-4">{{ u.position }}</td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="15" class="text-center py-6 text-gray-500 italic">No users found.</td>
+          </tr>
+          {% endfor %}
+          <!-- Hidden row when no results match search -->
+          <tr id="noResultRow" class="hidden">
+            <td colspan="15" class="text-center py-6 text-gray-500 italic">No matching users found.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,101 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Complaint Resolved</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-white font-sans">
+  <div class="max-w-2xl mx-auto my-10 rounded-lg overflow-hidden shadow-md">
+
+    <!-- Header Section -->
+   <div class="bg-green-900 text-white text-center py-8 relative">
+  
+  <!-- Logo and Smartfix Name Row -->
+  <div class="flex justify-between items-center px-6 mb-6">
+    <!-- Logo -->
+    <img src="{% static 'images/logo.png' %}" alt="Logo" class="w-10 h-10" />
+    
+    <!-- Brand Name -->
+    <span class="text-xl font-semibold">Smartfix</span>
+  </div>
+
+  <!-- Checkmark Icon -->
+  <div class="flex justify-center mb-4">
+    <div class="bg-white rounded-full p-2 w-10 h-10 flex items-center justify-center text-green-900 text-lg font-bold">
+      ✓
+    </div>
+  </div>
+
+  <!-- Greeting and Message -->
+  <p class="text-sm">Hi {{ complaint.name }},</p>
+  <h1 class="text-2xl font-bold">Your Complaint Has Been Resolved!</h1>
+
+  <!-- Complaint ID -->
+  <div class="mt-4 inline-block bg-yellow-400 px-4 py-1 rounded-full text-black font-semibold shadow-md">
+    Complaint ID: <span class="text-black font-bold">#{{ complaint.id }}</span>
+  </div>
+</div>
+
+
+    <!-- Complaint Details -->
+    <div class="bg-white px-6 py-8">
+      <div class="flex justify-between text-sm text-gray-700 mb-4">
+        <div>
+          <p class="font-semibold">Date</p>
+          <p>{{ complaint.complaint_date|date:"F d, Y" }}</p>
+        </div>
+        <div>
+          <p class="font-semibold">Department</p>
+          <p>{{ complaint.recipient_department }}</p>
+        </div>
+        <div>
+          <p class="font-semibold">Solved Date</p>
+          <p>{{ complaint.solved_date|date:"F d, Y" }}</p>
+        </div>
+      </div>
+
+      <!-- Address -->
+      <div class="mb-4 text-sm text-gray-700">
+        <p class="font-semibold mb-1">Address</p>
+        <p>{{ complaint.address }}, {{ complaint.village }}, {{ complaint.mandal }}, {{ complaint.district }}, {{ complaint.pincode }}</p>
+        {% if complaint.landmark %}
+        <p class="italic">Landmark: {{ complaint.landmark }}</p>
+        {% endif %}
+      </div>
+
+      <!-- Message -->
+      <div class="mb-4 text-sm text-gray-700">
+        <p class="font-semibold mb-1">Complaint Message</p>
+        <p class="italic">{{ complaint.message }}</p>
+      </div>
+
+      <!-- Solved Image -->
+      {% if complaint.solved_image %}
+      <div class="mb-4 flex gap-3">
+        <div>
+        <p class="text-sm font-semibold text-gray-700 mb-1">Complaint Image</p>
+        
+        <img src="{{ complaint.captured_image.url }}" alt="Captured Image" class="w-full rounded-md shadow w-[100px] h-[200px] object-cover" />
+        </div>
+        <div>
+        <p class="text-sm font-semibold text-gray-700 mb-1">Solved Image</p>
+
+        <img src="{{ complaint.solved_image.url }}" alt="Solved Image" class="w-full rounded-md shadow w-[100px] h-[200px] object-cover" />
+        </div>
+        
+
+      </div>
+      {% endif %}
+
+      <!-- Signature -->
+      <div class="text-sm text-gray-700">
+        <p class="font-semibold">Signature:</p>
+        <p>{{ complaint.signature }}</p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

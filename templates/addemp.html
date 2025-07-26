@@ -1,0 +1,169 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Add Employee</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body class="bg-gray-200 p-6 min-h-screen">
+
+  <div class="bg-white rounded-lg shadow-lg p-8 max-w-7xl mx-auto">
+    <form method="POST" enctype="multipart/form-data" action="{% url 'addemp' %}">
+      {% csrf_token %}
+       {% if messages %}
+      <div class="mb-6">
+        {% for message in messages %}
+          <div class="text-sm text-red-600 bg-red-100 border border-red-300 rounded-lg p-3 mb-2">
+            {{ message }}
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-2xl font-semibold text-gray-800">Create Staff</h2>
+        <button
+          type="submit"
+          class="bg-blue-600 text-white font-semibold py-2 px-6 rounded-md hover:bg-blue-700 transition duration-300 flex items-center space-x-2"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+            <path d="M17 3a1 1 0 00-1-1h-4.5a1 1 0 100 2H15v3h-1.5a1 1 0 000 2H15v3h-1.5a1 1 0 100 2H15v2h-3.5a1 1 0 100 2H16a1 1 0 001-1V3z"/>
+            <path d="M5 4a1 1 0 00-1 1v10a1 1 0 001 1h5a1 1 0 000-2H6V6h4a1 1 0 100-2H5z"/>
+          </svg>
+          <span>Save</span>
+        </button>
+
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Profile Image Upload -->
+        <div class="lg:col-span-1 flex flex-col items-center space-y-4 pt-8">
+          <div class="relative w-32 h-32 rounded-full border-4 border-gray-300 flex items-center justify-center bg-white ">
+            <!-- Image Preview or Default Icon -->
+            <img id="preview" src="{{ form.image.value.url|default:'' }}" alt="Preview" class="w-full h-full rounded-full object-cover hidden" />
+            <i id="iconPreview" class="fa-solid fa-user-plus text-red-400 text-6xl"></i>
+
+            <!-- Upload Button -->
+            <label
+              for="id_image"
+              class="absolute bottom-0 right-0 bg-blue-500 text-white rounded-full p-2 border-2 border-white cursor-pointer hover:bg-blue-600 transition"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+              </svg>
+            </label>
+            <input id="id_image" type="file" name="image" accept="image/*" class="hidden" onchange="loadImagePreview(event)">
+          </div>
+        </div>
+
+        <!-- Form Fields -->
+        <div class="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- (Unchanged form fields) -->
+          <div class="flex flex-col">
+            <label for="id_fname" class="text-gray-700 text-sm mb-1">First Name</label>
+            <input type="text" name="fname" id="id_fname" value="{{ request.POST.fname }}" required class="p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="Enter first name" />
+          </div>
+
+          <div class="flex flex-col">
+            <label for="id_mname" class="text-gray-700 text-sm mb-1">Middle Name</label>
+            <input type="text" name="mname" id="id_mname" value="{{ request.POST.mname }}" required class="p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="Enter middle name" />
+          </div>
+
+          <div class="flex flex-col">
+            <label for="id_lname" class="text-gray-700 text-sm mb-1">Last Name</label>
+            <input type="text" name="lname" id="id_lname" value="{{ request.POST.lname }}" required class="p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="Enter last name" />
+          </div>
+
+          <div class="flex flex-col">
+            <label for="id_mobile" class="text-gray-700 text-sm mb-1">Mobile</label>
+            <input type="text" name="mobile" id="id_mobile" value="{{ request.POST.mobile }}" required class="p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="Enter mobile" />
+          </div>
+
+          <div class="flex flex-col">
+            <label for="id_email" class="text-gray-700 text-sm mb-1">Email</label>
+            <input type="email" name="email" id="id_email" value="{{ request.POST.email }}" required class="p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="Enter email" />
+          </div>
+
+          <div class="flex flex-col">
+            <label for="id_password" class="text-gray-700 text-sm mb-1">Password</label>
+            <input type="password" name="password" id="id_password" value="{{ request.POST.password }}" required class="p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="Enter password" />
+          </div>
+
+          <div class="flex flex-col">
+            <label class="text-gray-700 text-sm mb-1" for="id_position">Position</label>
+            <select name="position" id="id_position" required class="p-3 border rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-blue-400">
+              <option value="">Select Position</option>
+              <option value="Officer" {% if request.POST.position == "Officer" %}selected{% endif %}>Officer</option>
+              <option value="Co-ordinator" {% if request.POST.position == "Co-ordinator" %}selected{% endif %}>Co-ordinator</option>
+            </select>
+          </div>
+
+          <div class="flex flex-col">
+            <label class="text-gray-700 text-sm mb-1" for="id_department">Department</label>
+           <select name="recipient_department" class="w-full border-b border-gray-300 p-1 bg-white" required>
+  <option value="" disabled selected>Select Department</option>
+  {% for dept in depts %}
+    <option value="{{ dept.name }}">{{ dept.name }}</option>
+  {% endfor %}
+  <option value="Other">Other</option>
+</select>
+          </div>
+
+          <div class="flex flex-col">
+            <label for="id_landmark" class="text-gray-700 text-sm mb-1">Landmark</label>
+            <input type="text" name="landmark" id="id_landmark" value="{{ request.POST.landmark }}" required class="p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="Enter landmark" />
+          </div>
+
+          <div class="flex flex-col">
+            <label for="id_village" class="text-gray-700 text-sm mb-1">Village</label>
+            <input type="text" name="village" id="id_village" value="{{ request.POST.village }}" required class="p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="Enter village" />
+          </div>
+
+          <div class="flex flex-col">
+            <label for="id_mandal" class="text-gray-700 text-sm mb-1">Mandal</label>
+            <input type="text" name="mandal" id="id_mandal" value="{{ request.POST.mandal }}" required class="p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="Enter mandal" />
+          </div>
+
+          <div class="flex flex-col">
+            <label for="id_district" class="text-gray-700 text-sm mb-1">District</label>
+            <input type="text" name="district" id="id_district" value="{{ request.POST.district }}" required class="p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="Enter district" />
+          </div>
+
+          <div class="flex flex-col">
+            <label for="id_state" class="text-gray-700 text-sm mb-1">State</label>
+            <input type="text" name="state" id="id_state" value="{{ request.POST.state }}" required class="p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="Enter state" />
+          </div>
+
+          <div class="flex flex-col">
+            <label for="id_pincode" class="text-gray-700 text-sm mb-1">Pincode</label>
+            <input type="text" name="pincode" id="id_pincode" value="{{ request.POST.pincode }}" required class="p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="Enter pincode" />
+          </div>
+
+          <div class="flex flex-col">
+            <label for="id_designated_at" class="text-gray-700 text-sm mb-1">Designated At</label>
+            <input type="text" name="designated_at" id="id_designated_at" value="{{ request.POST.designated_at }}" required class="p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="Enter designation location" />
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!-- JavaScript to preview image and toggle icon -->
+  <script>
+    function loadImagePreview(event) {
+      const preview = document.getElementById('preview');
+      const icon = document.getElementById('iconPreview');
+      const file = event.target.files[0];
+
+      if (file) {
+        preview.src = URL.createObjectURL(file);
+        preview.classList.remove('hidden');
+        icon.classList.add('hidden');
+      }
+    }
+  </script>
+
+</body>
+</html>

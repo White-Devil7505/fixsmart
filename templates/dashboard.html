@@ -1,0 +1,180 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Smart Restaurant Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body class="min-h-screen flex bg-gray-100">
+
+<!-- Sidebar -->
+<nav class="w-64 h-screen bg-red-900 text-white flex flex-col p-6">
+  <!-- User Info -->
+  <div class="flex items-center gap-4 mb-10">
+    <div class="w-10 h-10 flex items-center justify-center bg-white text-red-900 font-bold rounded-full text-xl">
+      {{ user.fname|slice:":1"|default:"A" }}
+    </div>
+    <div class="text-sm leading-tight">
+      <div>{{ user.fname }} {{ user.mname }} {{ user.lname }}</div>
+    </div>
+  </div>
+
+  <!-- Navigation Links -->
+  <div class="flex flex-col gap-3">
+    {% if user.position == 'Admin' %}
+      <a href="/dashboard" class="hover:underline">Dashboard</a>
+      <a href="{% url 'addemp' %}" class="hover:underline">Add Employee</a>
+      <a href="/allcomplaints" class="hover:underline">Complaints</a>
+      <a href="/update_delete" class="hover:underline">Employees</a>
+      <a href="/depts" class="hover:underline">Departments</a>
+      <a href="/users" class="hover:underline">Users</a>
+      
+    {% elif user.position == 'User' %}
+      <a href="{% url 'postcomplaint' %}" class="hover:underline">Post Complaint</a>
+      <a href="{% url 'completed_complaints' %}" class="hover:underline">Completed Complaints</a>
+      <a href="{% url 'track_complaint' %}" class="hover:underline">Track Complaint</a>
+    {% elif user.position == 'Officer' %}
+      <a href="{% url 'offcomplaints' %}" class="hover:underline">Complaints</a>
+      <a href="{% url 'completed_complaints' %}" class="hover:underline">Solved Complaints</a>
+      <a href="{% url 'track_complaint' %}" class="hover:underline">Track Complaint</a>
+    {% elif user.position == 'Co-ordinator' %}
+      <a href="{% url 'complaints' %}" class="hover:underline">See Complaints</a>
+      <a href="{% url 'completed_complaints' %}" class="hover:underline">Completed Complaints</a>
+      <a href="{% url 'track_complaint' %}" class="hover:underline">Track Complaint</a>
+    {% endif %}
+  </div>
+
+  <div class="mt-auto space-y-3 pt-6 border-t border-white/20 flex flex-col">
+    <a href="/changepass" class="hover:underline">Change Password</a>
+    <a href="/logout" class="hover:underline">Logout</a>
+  </div>
+</nav>
+
+<!-- Main Content: Replacing User Details with Add Employee Form -->
+<div class="flex-1 p-10 bg-gray-200 min-h-screen">
+  <div class="bg-white rounded-lg shadow-lg p-8 max-w-7xl mx-auto">
+    
+      {% csrf_token %}
+      {% if messages %}
+        <div class="mb-6">
+          {% for message in messages %}
+            <div class="text-sm text-red-600 bg-red-100 border border-red-300 rounded-lg p-3 mb-2">
+              {{ message }}
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-2xl font-semibold text-gray-800">Create Staff</h2>
+        <button
+          type="submit"
+          class="bg-blue-600 text-white font-semibold py-2 px-6 rounded-md hover:bg-blue-700 transition duration-300 flex items-center space-x-2"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+            <path d="M17 3a1 1 0 00-1-1h-4.5a1 1 0 100 2H15v3h-1.5a1 1 0 000 2H15v3h-1.5a1 1 0 100 2H15v2h-3.5a1 1 0 100 2H16a1 1 0 001-1V3z"/>
+            <path d="M5 4a1 1 0 00-1 1v10a1 1 0 001 1h5a1 1 0 000-2H6V6h4a1 1 0 100-2H5z"/>
+          </svg>
+          <span>Save</span>
+        </button>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Profile Image Upload -->
+        <div class="lg:col-span-1 flex flex-col items-center space-y-4 pt-8">
+          <div class="relative w-32 h-32 rounded-full border-4 border-gray-300 flex items-center justify-center bg-white">
+           {% if user.image %}
+  <img id="preview" src="{{ user.image.url }}" alt="Preview" class="w-full h-full rounded-full object-cover" />
+{% else %}
+  <img id="preview" src="{% static 'default-user.png' %}" alt="No Image" class="w-full h-full rounded-full object-cover" />
+{% endif %}
+
+
+            
+          </div>
+        </div>
+
+        <!-- Form Fields -->
+        <div class="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="flex flex-col">
+            <label for="id_fname" class="text-gray-700 text-sm mb-1">First Name</label>
+            <h3>{{user.fname}}</h3>
+          </div>
+
+          <div class="flex flex-col">
+            <label for="id_mname" class="text-gray-700 text-sm mb-1">Middle Name</label>
+            <h3>{{user.mname}}</h3>
+          </div>
+
+          <div class="flex flex-col">
+            <label for="id_lname" class="text-gray-700 text-sm mb-1">Last Name</label>
+<h3>{{user.lname}}</h3>          </div>
+
+          <div class="flex flex-col">
+            <label for="id_mobile" class="text-gray-700 text-sm mb-1">Mobile</label>
+<h3>{{user.mobile}}</h3>          </div>
+
+          <div class="flex flex-col">
+            <label for="id_email" class="text-gray-700 text-sm mb-1">Email</label>
+            <h3>{{user.email}}</h3>
+          </div>
+
+          
+
+          <div class="flex flex-col">
+            <label for="id_position" class="text-gray-700 text-sm mb-1">Position</label>
+           <h3>{{user.position}}</h3>
+          </div>
+
+         
+
+          <div class="flex flex-col">
+            <label for="id_landmark" class="text-gray-700 text-sm mb-1">Landmark</label>
+            <h3>{{user.landmark}}</h3>
+          </div>
+
+          <div class="flex flex-col">
+            <label for="id_village" class="text-gray-700 text-sm mb-1">Village</label>
+           <h3>{{user.village}}</h3>
+          </div>
+
+          <div class="flex flex-col">
+            <label for="id_mandal" class="text-gray-700 text-sm mb-1">Mandal</label>
+            <h3>{{user.mandal}}</h3>
+          </div>
+
+          <div class="flex flex-col">
+            <label for="id_district" class="text-gray-700 text-sm mb-1">District</label>
+            <h3>{{user.district}}</h3>
+          </div>
+
+          <div class="flex flex-col">
+            <label for="id_state" class="text-gray-700 text-sm mb-1">State</label>
+            <h3>{{user.state}}</h3>
+          </div>
+
+          <div class="flex flex-col">
+            <label for="id_pincode" class="text-gray-700 text-sm mb-1">Pincode</label>
+           <h3>{{user.pincode}}</h3>
+          </div>
+          {% if user.position != "User" %}
+
+
+          <div class="flex flex-col">
+            <label for="id_designated_at" class="text-gray-700 text-sm mb-1">Designated At</label>
+            <h3>{{user.designated_at}}</h3>
+          {% endif %}
+        </div>
+      </div>
+   
+  </div>
+</div>
+
+<!-- JS for image preview -->
+
+
+</body>
+</html>

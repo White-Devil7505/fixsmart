@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Track Complaints</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-white p-4 font-sans">
+
+  <div class="max-w-4xl mx-auto space-y-6">
+    {% for complaint in complaints %}
+    <div class="border rounded-lg p-4 shadow-sm space-y-4">
+      <!-- Complaint Info -->
+      <div class="flex items-center justify-between">
+        <!-- Placeholder Image -->
+        <div class="flex items-center space-x-4">
+          {% if complaint.captured_image %}
+  <img src="{{ complaint.captured_image.url }}" alt="Complaint Image" class="w-20 h-20 object-contain rounded" />
+{% else %}
+  <img src="https://via.placeholder.com/80x80?text=No+Image" alt="No Image" class="w-20 h-20 object-contain rounded bg-gray-100" />
+{% endif %}
+
+          <div>
+            <p class="text-gray-800 font-semibold">{{ complaint.name }}</p>
+            <p class="text-gray-500 text-sm">{{ complaint.recipient_department }}</p>
+            <p class="text-gray-500 text-sm">Filed on: {{ complaint.complaint_date|date:"M d, Y" }}</p>
+          </div>
+        </div>
+        <!-- Status & ID -->
+        <div class="text-right">
+          <p class="text-gray-600 text-sm">ID: #{{ complaint.id }}</p>
+          <p class="text-gray-800 font-semibold text-sm">{{ complaint.status }}</p>
+        </div>
+      </div>
+
+      <!-- Progress Title -->
+      <div class="flex items-center justify-between mb-1 text-sm text-gray-600">
+        <div class="flex items-center space-x-1">
+          <span>Track Complaint</span>
+        </div>
+      </div>
+
+      <!-- Progress Bar -->
+      <div class="relative w-full h-2 bg-gray-200 rounded-full mb-2">
+        {% if complaint.status == "Pending" %}
+          <div class="absolute top-0 left-0 h-2 bg-purple-500 rounded-full" style="width: 33%;"></div>
+        {% elif complaint.status == "Ongoing" %}
+          <div class="absolute top-0 left-0 h-2 bg-purple-500 rounded-full" style="width: 66%;"></div>
+        {% elif complaint.status == "Denied Complaint" %}
+  <div class="absolute top-0 left-0 h-2 bg-red-500 rounded-full" style="width: 100%;"></div>
+{% endif %}
+      </div>
+
+      <!-- Steps -->
+<div class="flex justify-between text-xs text-gray-600 px-1">
+  <!-- Complaint Posted -->
+  <div class="{% if complaint.status in 'Pending Ongoing Denied Complaint' %}text-purple-600{% else %}text-gray-500{% endif %} relative">
+    <span class="block w-2 h-2 mx-auto mb-1 rounded-full {% if complaint.status in 'Pending Ongoing Denied Complaint' %}bg-purple-600{% else %}bg-gray-400{% endif %}"></span>
+    <span>Complaint Posted</span>
+  </div>
+
+  {% if complaint.status == "Denied Complaint" %}
+    <!-- Denied step -->
+    <div class="text-red-500 relative">
+      <span class="block w-2 h-2 mx-auto mb-1 bg-red-500 rounded-full"></span>
+      <span>Denied</span>
+    </div>
+
+  {% elif complaint.status == "Pending" %}
+    <!-- Accepted (gray) -->
+    <div class="text-gray-400 relative">
+      <span class="block w-2 h-2 mx-auto mb-1 bg-gray-300 rounded-full"></span>
+      <span>Accepted</span>
+    </div>
+    <!-- Ongoing (gray) -->
+    <div class="text-gray-400 relative">
+      <span class="block w-2 h-2 mx-auto mb-1 bg-gray-300 rounded-full"></span>
+      <span>Ongoing</span>
+    </div>
+
+  {% elif complaint.status == "Ongoing" %}
+    <!-- Accepted (purple) -->
+    <div class="text-purple-600 relative">
+      <span class="block w-2 h-2 mx-auto mb-1 bg-purple-600 rounded-full"></span>
+      <span>Accepted</span>
+    </div>
+    <!-- Ongoing (gray or purple) -->
+    <div class="text-gray-400 relative">
+      <span class="block w-2 h-2 mx-auto mb-1 bg-gray-400 rounded-full"></span>
+      <span>Ongoing</span>
+    </div>
+  {% endif %}
+</div>
+
+    </div>
+    {% empty %}
+      <p class="text-center text-gray-500">No complaints found.</p>
+    {% endfor %}
+  </div>
+
+</body>
+</html>

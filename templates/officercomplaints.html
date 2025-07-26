@@ -1,0 +1,128 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Complaint Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style type="text/tailwindcss">
+    @layer utilities {
+      @keyframes pulse-blue {
+        0%   { transform: scale(1); opacity: 0.3; background-color: theme('colors.blue.200'); }
+        50%  { transform: scale(1.2); opacity: 0.6; background-color: theme('colors.teal.300'); }
+        100% { transform: scale(1); opacity: 0.3; background-color: theme('colors.sky.300'); }
+      }
+
+      @keyframes pulse-purple {
+        0%   { transform: scale(1); opacity: 0.3; background-color: theme('colors.purple.200'); }
+        50%  { transform: scale(1.2); opacity: 0.6; background-color: theme('colors.fuchsia.300'); }
+        100% { transform: scale(1); opacity: 0.3; background-color: theme('colors.violet.300'); }
+      }
+
+      @keyframes pulse-green {
+        0%   { transform: scale(1); opacity: 0.3; background-color: theme('colors.green.200'); }
+        50%  { transform: scale(1.2); opacity: 0.6; background-color: theme('colors.lime.300'); }
+        100% { transform: scale(1); opacity: 0.3; background-color: theme('colors.emerald.300'); }
+      }
+
+      @keyframes pulse-pink {
+        0%   { transform: scale(1); opacity: 0.3; background-color: theme('colors.pink.200'); }
+        50%  { transform: scale(1.2); opacity: 0.6; background-color: theme('colors.rose.300'); }
+        100% { transform: scale(1); opacity: 0.3; background-color: theme('colors.red.200'); }
+      }
+
+      .animate-curve-tl { animation: pulse-blue 6s ease-in-out infinite; }
+      .animate-curve-tr { animation: pulse-purple 6s ease-in-out infinite; }
+      .animate-curve-bl { animation: pulse-green 6s ease-in-out infinite; }
+      .animate-curve-br { animation: pulse-pink 6s ease-in-out infinite; }
+    }
+  </style>
+</head>
+<body class="relative bg-gradient-to-br from-gray-100 via-gray-50 to-gray-200 min-h-screen p-8 font-sans overflow-hidden">
+
+  <!-- Animated Background Curves -->
+  <div class="absolute top-0 left-0 w-40 h-40 rounded-br-full z-0 animate-curve-tl"></div>
+  <div class="absolute top-0 right-0 w-40 h-40 rounded-bl-full z-0 animate-curve-tr delay-300"></div>
+  <div class="absolute bottom-0 left-0 w-40 h-40 rounded-tr-full z-0 animate-curve-bl delay-500"></div>
+  <div class="absolute bottom-0 right-0 w-40 h-40 rounded-tl-full z-0 animate-curve-br delay-700"></div>
+
+  <!-- Page Header -->
+  <div class="relative z-10 text-center mb-12">
+    <h1 class="text-4xl font-extrabold text-gray-800 tracking-tight drop-shadow-lg">📋 Complaint Dashboard</h1>
+    <p class="text-gray-500 text-lg mt-2">Track and manage complaints submitted by residents</p>
+
+    {% if messages %}
+    <div class="mb-6" id="message-container">
+      {% for message in messages %}
+        <div class="text-sm text-red-600 bg-red-100 border border-red-300 rounded-lg p-3 mb-2">
+          {{ message }}
+        </div>
+      {% endfor %}
+    </div>
+    <script>
+      setTimeout(function() {
+        const messageContainer = document.getElementById('message-container');
+        if (messageContainer) {
+          messageContainer.style.display = 'none';
+        }
+      }, 10000);
+    </script>
+    {% endif %}
+  </div>
+
+  <!-- Complaints Grid -->
+  <div class="relative z-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+    {% for comp in complaint %}
+    <a href="{% url 'detailed' comp.id %}">
+    <div class="bg-gradient-to-br from-white/70 via-gray-100/70 to-white/70 backdrop-blur-md border border-gray-200 rounded-3xl shadow-xl hover:shadow-2xl transform hover:scale-105 transition duration-300 overflow-hidden hover:ring-2 hover:ring-blue-300">
+      <div class="p-6">
+        <!-- Header -->
+        <div class="flex items-center gap-4 mb-4">
+          {% if comp.captured_image %}
+            <img src="{{ comp.captured_image.url }}" alt="Image" class="w-16 h-16 rounded-full object-cover ring-2 ring-blue-400 shadow-sm" />
+          {% else %}
+            <img src="{% static 'default-avatar.png' %}" alt="No Image" class="w-16 h-16 rounded-full bg-gray-300 ring-2 ring-gray-300" />
+          {% endif %}
+          <div>
+            <h2 class="text-xl font-semibold text-gray-800">{{ comp.email }}</h2>
+            <p class="text-sm text-gray-500">{{ comp.mobile }}</p>
+            <p class="text-sm mt-1 text-gray-600"><span class="font-semibold">Message:</span> {{ comp.message }}</p>
+          </div>
+        </div>
+
+        <!-- Department & Status -->
+        <div class="flex items-center justify-between mb-3">
+          <span class="bg-gradient-to-r from-blue-200 to-blue-400 text-blue-900 text-xs font-semibold px-3 py-1 rounded-full shadow">{{ comp.recipient_department }}</span>
+          <span class="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-md font-medium">
+            {% if comp.status %}  {{ comp.status }} {% else %} Pending {% endif %}
+          </span>
+        </div>
+
+        <!-- Complaint Details -->
+
+
+        <!-- Timestamp -->
+        <p class="text-xs text-gray-400 mb-4">🕒 Submitted on: {{ comp.complaint_date|date:"M d, Y H:i" }}</p>
+
+       
+        
+      </div>
+    </div>
+    </a>
+    {% empty %}
+      <div class="col-span-full text-center py-20 relative z-10">
+        <p class="text-gray-500 text-xl">🚫 No complaints found.</p>
+      </div>
+    {% endfor %}
+  </div>
+
+  <script>
+    function toggleAssign(id) {
+      const form = document.getElementById(`assign-form-${id}`);
+      form.classList.toggle('hidden');
+    }
+  </script>
+</body>
+</html>

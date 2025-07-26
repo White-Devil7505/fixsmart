@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Completed Complaints</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .fade-in {
+      animation: fadeIn 0.8s ease-in-out both;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-gradient-to-r from-blue-50 to-blue-100 p-6 font-sans">
+
+  <!-- Page Title -->
+  <div class="text-center mb-8">
+    <h1 class="text-3xl font-bold text-blue-800">Completed Complaints</h1>
+    <p class="text-sm text-gray-600 mt-1">Review resolved issues submitted by users.</p>
+  </div>
+
+  <!-- Optional search bar -->
+  <div class="flex justify-center mb-8">
+    <input type="text" placeholder="Search complaints..." class="w-full max-w-md px-4 py-2 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-300" />
+  </div>
+
+  <!-- Complaints Grid -->
+  <div class="flex flex-wrap justify-center gap-6">
+    {% for complaint in completed_complaints %}
+    <div class="bg-white rounded-2xl shadow-lg w-72 overflow-hidden fade-in">
+      
+      <!-- Header -->
+      <div class="bg-blue-500 p-3 relative">
+        <div class="text-white text-sm font-semibold">{{ complaint.recipient_department }}</div>
+        <div class="text-xl font-bold mt-1">{{ complaint.status }}</div>
+        <div class="text-white text-xs opacity-90">Solved on {{ complaint.solved_date|date:"M d, Y" }}</div>
+        <div class="absolute bottom-0 left-0 w-full h-5 bg-white rounded-t-full translate-y-1/2"></div>
+      </div>
+
+      <!-- Content -->
+      <div class="pt-4 pb-3 px-4">
+        <div class="text-xs text-gray-600 mb-1">Name: <span class="text-blue-600 font-bold">{{ complaint.name }}</span></div>
+        <div class="text-xs text-gray-600 mb-1">Mobile: <span class="text-blue-600 font-bold">{{ complaint.mobile }}</span></div>
+        <div class="text-xs text-gray-600 mb-1">Date: <span class="text-blue-600 font-bold">{{ complaint.complaint_date|date:"M d, Y" }}</span></div>
+
+        <div class="mt-3">
+          <a href="{% url 'detailed_view' complaint.id %}" class="w-full block border border-blue-600 text-blue-600 py-1.5 rounded-xl hover:bg-blue-50 transition font-semibold text-sm text-center">
+            View Details
+          </a>
+        </div>
+      </div>
+    </div>
+    {% empty %}
+    <p class="text-gray-600 text-center w-full">No completed complaints found.</p>
+    {% endfor %}
+  </div>
+
+</body>
+</html>
